@@ -22,11 +22,10 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 import time
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict, Set
 
 # ---------------------------------------------------------------------------
 # Import the library code.  When the repository is executed from the source
@@ -89,7 +88,7 @@ def run(max_n: int) -> Dict[int, Dict[str, Any]]:
     for n in range(3, max_n + 1):
         start = time.perf_counter()
         # 1. Brute‑force enumeration of all thrackles.
-        all_thrackles = enumerate_thrackles(n)
+        all_thrackles: Set[frozenset[int]] = enumerate_thrackles(n)
         # 2. Census by size.
         size_census = census(n)
         # 3. Group maximal thrackles by their cycle length.
@@ -142,7 +141,12 @@ def main() -> None:
     failed verification.
     """
     parser = argparse.ArgumentParser(description="Validate convex thrackle census.")
-    parser.add_argument("--max-n", type=int, default=11, help="Maximum n to test (default: 11)")
+    parser.add_argument(
+        "--max-n",
+        type=int,
+        default=11,
+        help="Maximum n to test (default: 11)",
+    )
     args = parser.parse_args()
 
     data = run(args.max_n)
